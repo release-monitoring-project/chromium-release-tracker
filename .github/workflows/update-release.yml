@@ -1,0 +1,40 @@
+name: Update Chromium Snapshot JSON
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Runs daily at 02:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Run fetch-latest-snapshots.sh
+        run: bash fetch-latest-snapshots.sh
+
+      - name: Get tag from generated JSON
+        id: get_tag
+        run: |
+          TAG=$(jq -r .tag chromium_download_links.json)
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Create or Update Release
+        uses: ncipollo/release-action@v1.14.0
+        with:
+          tag: ${{ steps.get_tag.outputs.tag }}
+          name: Chromium Snapshot ${{ steps.get_tag.outputs.tag }}
+          body: Automated release for Chromium snapshot ${{ steps.get_tag.outputs.tag }}.
+          artifacts: chromium_download_links.json
+          artifactContentType: application/json
+          allowUpdates: true
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
