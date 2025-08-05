@@ -2,7 +2,7 @@
 
 LOG_FILE="chromium_snapshot_fetch.log"
 OUTPUT_JSON="chromium_download_links.json"
-TAG_NAME=$(date +"%Y-%m-%dT%H:%M:%S%z")
+TAG_NAME=$(date +"%Y-%m-%d_%H-%M-%S")
 RELEASE_URL="https://commondatastorage.googleapis.com/chromium-browser-snapshots/index.html"
 
 echo "[$(date)] Starting Chromium ZIP release fetch..." > "$LOG_FILE"
