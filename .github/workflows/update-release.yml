@@ -2,7 +2,7 @@ name: Update Chromium Snapshot JSON
 
 on:
   schedule:
-    - cron: '0 2 * * *' # Runs daily at 02:00 UTC
+    - cron: '30 * * * *' # Runs erver 30 minutes past the hour (UTC time)
   workflow_dispatch:
 
 permissions:
